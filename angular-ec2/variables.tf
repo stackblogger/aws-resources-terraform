@@ -8,6 +8,11 @@ variable "public_key_path" {
   type        = string
 }
 
+variable "private_key_path" {
+  description = "The path to the SSH private key"
+  type        = string
+}
+
 variable "github_repo" {
   description = "The GitHub repository URL"
   type        = string

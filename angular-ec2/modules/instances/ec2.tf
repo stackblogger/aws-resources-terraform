@@ -28,12 +28,19 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
+resource "aws_key_pair" "deployer" {
+  key_name   = var.key_name
+  public_key = file(var.public_key_path)
+}
+
 resource "aws_instance" "angular_app" {
   ami           = var.ami_id
   instance_type = var.instance_type
   key_name      = var.key_name
-  security_groups = [aws_security_group.allow_ssh.name]
+  security_groups = [aws_security_group.allow_ssh.id]
   subnet_id     = aws_subnet.main.id
+
+  associate_public_ip_address = true
 
   provisioner "remote-exec" {
     inline = [
@@ -41,8 +48,8 @@ resource "aws_instance" "angular_app" {
       "sudo apt-get install -y git",
       "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
       "sudo apt-get install -y nodejs",
-      "git clone ${var.github_repo}",
-      "cd ${basename(var.github_repo, ".git")}",
+      "git clone ${var.github_repo} /home/ubuntu/repo",
+      "cd /home/ubuntu/repo",
       "npm install",
       "npm run build --prod",
       "sudo npm install -g http-server",
@@ -52,7 +59,7 @@ resource "aws_instance" "angular_app" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = file(var.public_key_path)
+      private_key = file(var.private_key_path)
       host        = self.public_ip
     }
   }
