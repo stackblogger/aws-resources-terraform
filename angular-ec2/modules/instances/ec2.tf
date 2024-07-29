@@ -10,8 +10,8 @@ resource "aws_security_group" "allow_traffic" {
   }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -46,9 +46,9 @@ resource "aws_instance" "angular_app" {
               git clone ${var.github_repo} /home/ubuntu/repo
               cd /home/ubuntu/repo
               npm install
-              npm run build --prod
-              npm install -g http-server
-              nohup http-server ./dist -p 80 &
+              sudo npm run build --prod
+              sudo npm install -g http-server
+              sudo http-server ./dist/angular-rxjs-infite-scroll -p 8080 &
               EOF
 
   tags = {
