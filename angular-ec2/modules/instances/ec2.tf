@@ -33,7 +33,7 @@ resource "aws_instance" "angular_app" {
   ami           = var.ami_id
   instance_type = var.instance_type
   key_name      = aws_key_pair.deployer.key_name
-  security_groups = [aws_security_group.allow_ssh.name]
+  security_groups = [aws_security_group.allow_traffic.name]
 
   associate_public_ip_address = true
 
