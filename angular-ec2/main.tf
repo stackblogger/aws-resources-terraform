@@ -25,8 +25,6 @@ module "deploy_angular_app" {
   github_repo     = var.github_repo
   instance_type   = var.instance_type
   ami_id          = data.aws_ami.ubuntu.id
-  vpc_cidr_block  = var.vpc_cidr_block
-  subnet_cidr     = var.subnet_cidr
   private_key_path = var.private_key_path
 }
 
