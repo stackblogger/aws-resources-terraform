@@ -41,7 +41,7 @@ resource "aws_instance" "angular_app" {
     inline = [
       "sudo apt-get update",
       "sudo apt-get install -y git",
-      "curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -",
+      "curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -",
       "sudo apt-get install -y nodejs",
       "git clone ${var.github_repo} /home/ubuntu/repo",
       "cd /home/ubuntu/repo",
