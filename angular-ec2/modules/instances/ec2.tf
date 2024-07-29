@@ -37,27 +37,19 @@ resource "aws_instance" "angular_app" {
 
   associate_public_ip_address = true
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y git",
-      "curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -",
-      "sudo apt-get install -y nodejs",
-      "git clone ${var.github_repo} /home/ubuntu/repo",
-      "cd /home/ubuntu/repo",
-      "npm install",
-      "npm run build --prod",
-      "sudo npm install -g http-server",
-      "nohup http-server ./dist -p 80 &"
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file(var.private_key_path)
-      host        = self.public_ip
-    }
-  }
+  user_data = <<-EOF
+              #!/bin/bash
+              apt-get update
+              apt-get install -y git
+              curl -sL https://deb.nodesource.com/setup_16.x | bash -
+              apt-get install -y nodejs
+              git clone ${var.github_repo} /home/ubuntu/repo
+              cd /home/ubuntu/repo
+              npm install
+              npm run build --prod
+              npm install -g http-server
+              nohup http-server ./dist -p 80 &
+              EOF
 
   tags = {
     Name = "AngularAppDeployment"
