@@ -1,13 +1,3 @@
-resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr_block
-}
-
-resource "aws_subnet" "main" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.subnet_cidr
-  availability_zone = "us-east-1a"
-}
-
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh"
   description = "Allow SSH inbound traffic"
@@ -17,6 +7,13 @@ resource "aws_security_group" "allow_ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "http"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -36,9 +33,8 @@ resource "aws_key_pair" "deployer" {
 resource "aws_instance" "angular_app" {
   ami           = var.ami_id
   instance_type = var.instance_type
-  key_name      = var.key_name
+  key_name      = aws_key_pair.deployer.key_name
   security_groups = [aws_security_group.allow_ssh.id]
-  subnet_id     = aws_subnet.main.id
 
   associate_public_ip_address = true
 
