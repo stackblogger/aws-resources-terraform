@@ -25,3 +25,7 @@ module "instances" {
   public_key_path = var.public_key_path
   instance_type   = var.instance_type
 }
+
+output "instance_ip" {
+  value = module.instances.instance_ip
+}
